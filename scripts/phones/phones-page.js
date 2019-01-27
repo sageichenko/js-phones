@@ -1,13 +1,21 @@
 import PhoneCatalog from './components/phone-catalog.js';
 import PhoneViewer from './components/phone-viewer.js';
 import PhoneService from "./services/phone-service.js";
+import ShopCart from './components/shopping-cart.js';
 
 export default class PhonesPage {
     constructor({element}) {
         this._element = element;
         this._render();
+        this._initShoppingCard();
         this._initViewer();
         this._initCatalog();
+    }
+
+    _initShoppingCard() {
+        this._shopCart = new ShopCart({
+            element: this._element.querySelector('[data-element="shopping-cart"]')
+        });
     }
 
     _initCatalog() {
@@ -17,9 +25,10 @@ export default class PhonesPage {
             onPhoneSelected: id => {
                 this._catalog.hide();
 
-                const phone = PhoneService.getPhone(id);
-                this._viewer.show(phone);
-            }
+                PhoneService.getPhone(id, this._viewer.show);
+                //this._viewer.show(phone);
+            },
+            shopCart: this._shopCart
         });
     }
 
@@ -32,33 +41,27 @@ export default class PhonesPage {
     _render() {
         this._element.innerHTML = `
             <div class="row">
-              <!--Sidebar-->
-              <div class="col-md-2">
-                                       <section>
-                                       <p>
-                                       Search:
-                                       <input>
-                                       </p>
-                                       
-                                       <p>
-                                       Sort by:
-                                       <select>
-                                       <option value="name">Alphabetical</option>
-                                       <option value="age">Newest</option>
-                                       </select>
-                                       </p>
-                                       </section>
-                                       
-                                       <section>
-                                       <p>Shopping Cart</p>
-                                       <ul>
-                                       <li>Phone 1</li>
-                                       <li>Phone 2</li>
-                                       <li>Phone 3</li>
-                                       </ul>
-                                       </section>
-                                       </div>
-
+                <!--Sidebar-->
+                <div class="col-md-2">
+                    <section>
+                        <p>
+                            Search:
+                            <input type="text">
+                        </p>
+                        <p>
+                            Sort by:
+                            <select data-="sort-selector">
+                                <option value="name">Alphabetical</option>
+                                <option value="age">Newest</option>
+                            </select>
+                        </p>
+                    </section>
+                    <section>
+                        <p>Shopping Cart</p>
+                        <div data-element="shopping-cart">
+                        </div>
+                    </section>
+                </div>
               <!--Main content-->
               <div class="col-md-10">
                 <div data-component="phone-catalog"></div>
