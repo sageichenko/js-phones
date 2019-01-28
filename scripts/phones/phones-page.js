@@ -14,8 +14,16 @@ export default class PhonesPage {
     }
 
     _initEvents() {
-        this._element.querySelector('[data-element="sort-selector"]').addEventListener('change', (ev) => {
-            this._catalog.sort(ev.target.options[ev.target.selectedIndex].value);
+        this._element.addEventListener('input', (ev) => {
+            let target = ev.target;
+            if (target.getAttribute('data-element') === 'sort-selector')
+            {
+                this._catalog.sort(target.options[ev.target.selectedIndex].value);
+                return;
+            }
+            if (target.getAttribute('data-element') === 'search-field') {
+                this._catalog.search(target.value);
+            }
         });
     }
 
@@ -53,7 +61,7 @@ export default class PhonesPage {
                     <section>
                         <p>
                             Search:
-                            <input type="text">
+                            <input data-element="search-field" type="text">
                         </p>
                         <p>
                             Sort by:

@@ -1,5 +1,4 @@
 import Component from "../../component.js";
-//import phone from '../../../phones/motorola-xoom-with-wi-fi.js'
 
 export default class PhoneViewer extends Component {
     constructor({element}) {
