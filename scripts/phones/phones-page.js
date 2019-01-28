@@ -8,8 +8,8 @@ export default class PhonesPage {
         this._element = element;
         this._render();
         this._initShoppingCard();
-        this._initViewer();
         this._initCatalog();
+        this._initViewer();
         this._initEvents();
     }
 
@@ -39,8 +39,7 @@ export default class PhonesPage {
             phones: PhoneService.getPhones(),
             onPhoneSelected: id => {
                 this._catalog.hide();
-
-                PhoneService.getPhone(id, this._viewer.show);
+                PhoneService.getPhone(id, this._viewer.show.bind(this._viewer));
                 //this._viewer.show(phone);
             },
             shopCart: this._shopCart
@@ -50,6 +49,8 @@ export default class PhonesPage {
     _initViewer() {
         this._viewer = new PhoneViewer({
             element: this._element.querySelector('[data-component="phone-viewer"]'),
+            prevPage: this._catalog,
+            shopCart: this._shopCart
         })
     }
 

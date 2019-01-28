@@ -1,45 +1,60 @@
 import Component from "../../component.js";
 
 export default class PhoneViewer extends Component {
-    constructor({element}) {
+    constructor({element, prevPage, shopCart}) {
         super({element});
+        this._prevPage = prevPage;
+        this._shopCart = shopCart;
+        this._initEvents();
     }
 
     show(phone) {
-        this._render(phone);
+        this._currentPhone = phone;
+        this._render();
         super.show();
     }
 
-    _render(phone) {
+    _initEvents () {
+        this._element.addEventListener('click', (ev) => {
+            let target = ev.target;
+            if (target.classList.contains('btn-back')) {
+                this.hide();
+                this._prevPage.show();
+                return;
+            }
+            if (target.classList.contains('btn-add-to-cart')) {
+                this._shopCart.addProduct({
+                    id: this._currentPhone.id,
+                    name: this._currentPhone.name
+                });
+                return;
+            }
+            if (target.classList.contains('preview')) {
+                ev.preventDefault();
+                this._element.querySelector('.main-img').src = target.closest('.img-link');
+            }
+        })
+    }
+
+    _render() {
         this._element.innerHTML = `
-            
-            <img class="phone" src="${phone.images[0]}">
-      <button>Back</button>
-      <button>Add to basket</button>
+      <img class="phone main-img" src="${this._currentPhone.images[0]}">
+      <button class="btn-back">Back</button>
+      <button class="btn-add-to-cart">Add to basket</button>
   
-      <h1>${phone.name}</h1>
+      <h1>${this._currentPhone.name}</h1>
   
-      <p>${phone.description}</p>
+      <p>${this._currentPhone.description}</p>
   
       <ul class="phone-thumbs">
-        <li>
-          <img src="${phone.images[0]}">
-        </li>
-        <li>
-          <img src="${phone.images[1]}">
-        </li>
-        <li>
-          <img src="${phone.images[2]}">
-        </li>
-        <li>
-          <img src="${phone.images[3]}">
-        </li>
-        <li>
-          <img src="${phone.images[4]}">
-        </li>
-        <li>
-          <img src="${phone.images[5]}">
-        </li>
+      ${this._currentPhone.images.reduce( (acc, item) => {
+          acc+=`<li>
+            <a class="img-link" href="${item}">
+                <img class="preview" src="${item}">
+            </a>
+        </li>`;
+          return acc;
+        }, ``)}
       </ul>
 
 <div>
@@ -49,102 +64,102 @@ export default class PhoneViewer extends Component {
         <span>Availability and Networks</span>
         <dl>
           <dt>Availability</dt>
-          <dd>${phone.availability}</dd>
+          <dd>${this._currentPhone.availability}</dd>
         </dl>
       </li>
       <li>
         <span>Battery</span>
         <dl>
           <dt>Type</dt>
-          <dd>${phone.battery.type}</dd>
+          <dd>${this._currentPhone.battery.type}</dd>
           <dt>Talk Time</dt>
-          <dd>${phone.battery.talkTime}</dd>
+          <dd>${this._currentPhone.battery.talkTime}</dd>
           <dt>Standby time (max)</dt>
-          <dd>${phone.battery.standbyTime}</dd>
+          <dd>${this._currentPhone.battery.standbyTime}</dd>
         </dl>
       </li>
       <li>
         <span>Storage and Memory</span>
         <dl>
           <dt>RAM</dt>
-          <dd>${phone.storage.ram}</dd>
+          <dd>${this._currentPhone.storage.ram}</dd>
           <dt>Internal Storage</dt>
-          <dd>${phone.storage.flash}</dd>
+          <dd>${this._currentPhone.storage.flash}</dd>
         </dl>
       </li>
       <li>
         <span>Connectivity</span>
         <dl>
           <dt>Network Support</dt>
-          <dd>${phone.connectivity.cell}</dd>
+          <dd>${this._currentPhone.connectivity.cell}</dd>
           <dt>WiFi</dt>
-          <dd>${phone.connectivity.wifi}</dd>
+          <dd>${this._currentPhone.connectivity.wifi}</dd>
           <dt>Bluetooth</dt>
-          <dd>${phone.connectivity.bluetooth}</dd>
+          <dd>${this._currentPhone.connectivity.bluetooth}</dd>
           <dt>Infrared</dt>
-          <dd>${phone.connectivity.infrared ? "✓" : "✘" }</dd>
+          <dd>${this._currentPhone.connectivity.infrared ? "✓" : "✘" }</dd>
           <dt>GPS</dt>
-          <dd>${phone.connectivity.gps ? "✓" : "✘" }</dd>
+          <dd>${this._currentPhone.connectivity.gps ? "✓" : "✘" }</dd>
         </dl>
       </li>
       <li>
         <span>Android</span>
         <dl>
           <dt>OS Version</dt>
-          <dd>${phone.android.os}</dd>
+          <dd>${this._currentPhone.android.os}</dd>
           <dt>UI</dt>
-          <dd>${phone.android.ui}</dd>
+          <dd>${this._currentPhone.android.ui}</dd>
         </dl>
       </li>
       <li>
         <span>Size and Weight</span>
         <dl>
           <dt>Dimensions</dt>
-          <dd>${phone.sizeAndWeight.dimensions[0]}</dd>
-          <dd>${phone.sizeAndWeight.dimensions[1]}</dd>
-          <dd>${phone.sizeAndWeight.dimensions[2]}</dd>
+          <dd>${this._currentPhone.sizeAndWeight.dimensions[0]}</dd>
+          <dd>${this._currentPhone.sizeAndWeight.dimensions[1]}</dd>
+          <dd>${this._currentPhone.sizeAndWeight.dimensions[2]}</dd>
           <dt>Weight</dt>
-          <dd>${phone.sizeAndWeight.weight}</dd>
+          <dd>${this._currentPhone.sizeAndWeight.weight}</dd>
         </dl>
       </li>
       <li>
         <span>Display</span>
         <dl>
           <dt>Screen size</dt>
-          <dd>${phone.display.screenSize}</dd>
+          <dd>${this._currentPhone.display.screenSize}</dd>
           <dt>Screen resolution</dt>
-          <dd>${phone.display.screenResolution}</dd>
+          <dd>${this._currentPhone.display.screenResolution}</dd>
           <dt>Touch screen</dt>
-          <dd>${phone.display.touchScreen ? "✓" : "✘" }</dd>
+          <dd>${this._currentPhone.display.touchScreen ? "✓" : "✘" }</dd>
         </dl>
       </li>
       <li>
         <span>Hardware</span>
         <dl>
           <dt>CPU</dt>
-          <dd>${phone.hardware.cpu}</dd>
+          <dd>${this._currentPhone.hardware.cpu}</dd>
           <dt>USB</dt>
-          <dd>${phone.hardware.usb}</dd>
+          <dd>${this._currentPhone.hardware.usb}</dd>
           <dt>Audio / headphone jack</dt>
-          <dd>${phone.hardware.audioJack}</dd>
+          <dd>${this._currentPhone.hardware.audioJack}</dd>
           <dt>FM Radio</dt>
-          <dd>${phone.hardware.fmRadio ? "✓" : "✘" }</dd>
+          <dd>${this._currentPhone.hardware.fmRadio ? "✓" : "✘" }</dd>
           <dt>Accelerometer</dt>
-          <dd>${phone.hardware.accelerometer ? "✓" : "✘" }</dd>
+          <dd>${this._currentPhone.hardware.accelerometer ? "✓" : "✘" }</dd>
         </dl>
       </li>
       <li>
         <span>Camera</span>
         <dl>
           <dt>Primary</dt>
-          <dd>${phone.camera.primary}</dd>
+          <dd>${this._currentPhone.camera.primary}</dd>
           <dt>Features</dt>
-          <dd>${phone.camera.features.join(' ')}</dd>
+          <dd>${this._currentPhone.camera.features.join(' ')}</dd>
         </dl>
       </li>
       <li>
         <span>Additional Features</span>
-        <dd>${phone.additionalFeatures}</dd>
+        <dd>${this._currentPhone.additionalFeatures}</dd>
       </li>
     </ul>
   </div>

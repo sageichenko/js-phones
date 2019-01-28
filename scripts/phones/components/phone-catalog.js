@@ -4,23 +4,36 @@ import PhoneCard from './phone-card.js'
 export default class PhoneCatalog extends Component {
     constructor({element, phones, onPhoneSelected, shopCart}) {
         super({element});
+        this._shopCart = shopCart;
         this._phonesData = phones;
         this._phonesCards = [];
-        this._initPhoneCard(shopCart);
+        this._initPhoneCard();
         this._visiblePhoneCards = this._phonesCards.slice();
         this._onPhoneSelected = onPhoneSelected;
         this._render();
+        // this._element.addEventListener('click', ev => {
+        //     this._onPhoneClick(ev);
+        // });
+        this._initEvents();
+    }
+
+    _initEvents () {
         this._element.addEventListener('click', ev => {
+            let target = ev.target;
+            if (target.classList.contains('phones__btn-buy-wrapper') || target.classList.contains('btn')) {
+                let phone = target.closest('[data-element="phone"]');
+                this.addToCart(phone.getAttribute('data-phone-id'), phone.getAttribute('data-phone-name'));
+                return;
+            }
             this._onPhoneClick(ev);
         });
     }
 
-    _initPhoneCard (shopCart) {
+    _initPhoneCard () {
         this._phonesData.forEach( item => {
             this._phonesCards.push(new PhoneCard({
                 element: document.createElement('li'),
                 phoneData: item,
-                shopCart: shopCart
             }));
         })
     }
@@ -42,15 +55,20 @@ export default class PhoneCatalog extends Component {
         this._render();
     }
 
+    addToCart(id, name) {
+        this._shopCart.addProduct({
+            id: id,
+            name: name
+        });
+    }
+
     _onPhoneClick(ev) {
-        // let target = ev.target;
-        //
-        // const phoneElement = ev.target.closest('[data-element="phone"]');
-        // if (!phoneElement) {
-        //     return;
-        // }
-        //
-        // this._onPhoneSelected(phoneElement.dataset.phoneId)
+        const phoneElement = ev.target.closest('[data-element="phone"]');
+        if (!phoneElement) {
+            return;
+        }
+
+        this._onPhoneSelected(phoneElement.dataset.phoneId)
     }
 
     _render() {
