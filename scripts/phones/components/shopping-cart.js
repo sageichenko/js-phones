@@ -1,12 +1,7 @@
 export default class ShopCart {
     constructor({element}) {
         this._element = element;
-        this._products = {
-            "4": {
-                name: "ololo",
-                qty: 3
-            }
-        };
+        this._products = {};
         this._element.innerHTML = this.HTML;
         this._initEvents();
     }
@@ -16,7 +11,6 @@ export default class ShopCart {
             let target = ev.target;
             if (target.classList.contains('delete-product-btn')) {
                 let product = target.closest('[data-element="cart-element"]');
-                console.log(product.getAttribute('data-phone-id'));
                 this.deleteProduct(product.getAttribute('data-phone-id'));
             }
         });

@@ -10,6 +10,13 @@ export default class PhonesPage {
         this._initShoppingCard();
         this._initViewer();
         this._initCatalog();
+        this._initEvents();
+    }
+
+    _initEvents() {
+        this._element.querySelector('[data-element="sort-selector"]').addEventListener('change', (ev) => {
+            this._catalog.sort(ev.target.options[ev.target.selectedIndex].value);
+        });
     }
 
     _initShoppingCard() {
@@ -50,7 +57,7 @@ export default class PhonesPage {
                         </p>
                         <p>
                             Sort by:
-                            <select data-="sort-selector">
+                            <select data-element="sort-selector">
                                 <option value="name">Alphabetical</option>
                                 <option value="age">Newest</option>
                             </select>

@@ -75,4 +75,12 @@ export default class PhoneCard {
             }
         });
     }
+
+    get age () {
+        return this._data.age;
+    }
+
+    get name () {
+        return this._data.name;
+    }
 }

@@ -10,11 +10,9 @@ export default class PhoneCatalog extends Component {
         this._onPhoneSelected = onPhoneSelected;
         this._render();
         this._element.addEventListener('click', ev => {
-            this._onPhoneClick(ev)
+            this._onPhoneClick(ev);
         });
     }
-
-
 
     _initPhoneCard (shopCart) {
         this._phonesData.forEach( item => {
@@ -24,6 +22,18 @@ export default class PhoneCatalog extends Component {
                 shopCart: shopCart
             }));
         })
+    }
+
+    sort(type) {
+        if (type === 'name') {
+            this._phonesCards.sort((a, b) => {
+                return (a.name > b.name) ? 1 : -1;
+            });
+        }
+        if (type === 'age') {
+            this._phonesCards.sort( (a, b) => (a.age - b.age));
+        }
+        this._render();
     }
 
     _onPhoneClick(ev) {
@@ -38,7 +48,7 @@ export default class PhoneCatalog extends Component {
     }
 
     _render() {
-        this._element.innerHTML = `
+        this._element.innerHTML= `
         <ul class="phones">
         </ul>`;
         this._phonesCards.forEach(phone => this._element.querySelector('.phones').appendChild(phone.element))
