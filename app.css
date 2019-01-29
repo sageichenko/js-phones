@@ -21,6 +21,12 @@ body {
   list-style: none;
 }
 
+.thumbnail {
+  clear: both;
+  height: 115px;
+  padding-top: 15px;
+}
+
 .thumb {
   float: left;
   margin: -0.5em 1em 1.5em 0;
@@ -35,12 +41,6 @@ body {
   height: 100%;
   display: flex;
   margin: 0 1em;
-}
-
-.phones li {
-  clear: both;
-  height: 115px;
-  padding-top: 15px;
 }
 
 /** Detail View **/
@@ -107,4 +107,8 @@ ul.specs dt {
 
 h1 {
   border-bottom: 1px solid gray;
+}
+
+.delete-product-btn {
+  cursor: pointer;
 }

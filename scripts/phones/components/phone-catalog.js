@@ -1,18 +1,68 @@
 import Component from '../../component.js';
+import PhoneCard from './phone-card.js'
 
 export default class PhoneCatalog extends Component {
-    constructor({element, phones, onPhoneSelected}) {
+    constructor({element, phones, onPhoneSelected, shopCart}) {
         super({element});
-        this._phones = phones;
+        this._shopCart = shopCart;
+        this._phonesData = phones;
+        this._phonesCards = [];
+        this._initPhoneCard();
+        this._visiblePhoneCards = this._phonesCards.slice();
         this._onPhoneSelected = onPhoneSelected;
         this._render();
+        // this._element.addEventListener('click', ev => {
+        //     this._onPhoneClick(ev);
+        // });
+        this._initEvents();
+    }
+
+    _initEvents () {
         this._element.addEventListener('click', ev => {
-            this._onPhoneClick(ev)
+            let target = ev.target;
+            if (target.classList.contains('phones__btn-buy-wrapper') || target.classList.contains('btn')) {
+                let phone = target.closest('[data-element="phone"]');
+                this.addToCart(phone.getAttribute('data-phone-id'), phone.getAttribute('data-phone-name'));
+                return;
+            }
+            this._onPhoneClick(ev);
+        });
+    }
+
+    _initPhoneCard () {
+        this._phonesData.forEach( item => {
+            this._phonesCards.push(new PhoneCard({
+                element: document.createElement('li'),
+                phoneData: item,
+            }));
+        })
+    }
+
+    sort(type) {
+        if (type === 'name') {
+            this._visiblePhoneCards.sort((a, b) => {
+                return (a.name > b.name) ? 1 : -1;
+            });
+        }
+        if (type === 'age') {
+            this._visiblePhoneCards.sort( (a, b) => (a.age - b.age));
+        }
+        this._render();
+    }
+
+    search(value) {
+        this._visiblePhoneCards = this._phonesCards.filter( (item) => ~item.name.toLowerCase().indexOf(value.toLowerCase()));
+        this._render();
+    }
+
+    addToCart(id, name) {
+        this._shopCart.addProduct({
+            id: id,
+            name: name
         });
     }
 
     _onPhoneClick(ev) {
-        ev.preventDefault();
         const phoneElement = ev.target.closest('[data-element="phone"]');
         if (!phoneElement) {
             return;
@@ -22,27 +72,9 @@ export default class PhoneCatalog extends Component {
     }
 
     _render() {
-        this._element.innerHTML = `
+        this._element.innerHTML= `
         <ul class="phones">
-            ${this._phones.map(phone => `
-                <li class="thumbnail"
-                    data-element="phone"
-                    data-phone-id="${phone.id}">
-                    
-                    <a href="#!/phones/${phone.id}" class="thumb">
-                      <img alt="${phone.name}" src="${phone.imageUrl}">
-                    </a>
-                    
-                    <div class="phones__btn-buy-wrapper">
-                        <a class="btn btn-success">
-                            Add
-                        </a>
-                    </div>
-                    
-                    <a href="#!/phones/${phone.id}">${phone.name}</a>
-                    
-                    <p>${phone.snippet}</p>
-                </li>`).join('')}
         </ul>`;
+        this._visiblePhoneCards.forEach(phone => this._element.querySelector('.phones').appendChild(phone.element))
     }
 }
