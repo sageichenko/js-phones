@@ -1,7 +1,8 @@
 import PhoneCatalog from './components/phone-catalog.js';
 import PhoneViewer from './components/phone-viewer.js';
-import PhoneService from "./services/phone-service.js";
+import PhoneService from './services/phone-service.js';
 import ShopCart from './components/shopping-cart.js';
+import debounce from './../modules/debounce.js';
 
 export default class PhonesPage {
     constructor({element}) {
@@ -14,6 +15,7 @@ export default class PhonesPage {
     }
 
     _initEvents() {
+        let search = debounce(this._catalog.search.bind(this._catalog), 1000);
         this._element.addEventListener('input', (ev) => {
             let target = ev.target;
             if (target.getAttribute('data-element') === 'sort-selector')
@@ -22,7 +24,7 @@ export default class PhonesPage {
                 return;
             }
             if (target.getAttribute('data-element') === 'search-field') {
-                this._catalog.search(target.value);
+                search(target.value);
             }
         });
     }
