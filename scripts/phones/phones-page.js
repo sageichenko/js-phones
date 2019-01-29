@@ -40,7 +40,6 @@ export default class PhonesPage {
             onPhoneSelected: id => {
                 this._catalog.hide();
                 PhoneService.getPhone(id, this._viewer.show.bind(this._viewer));
-                //this._viewer.show(phone);
             },
             shopCart: this._shopCart
         });
